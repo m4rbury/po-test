@@ -5,17 +5,24 @@ from bs4 import BeautifulSoup
 
 html = open("AA.html")
 bsObj = BeautifulSoup(html)
-bsObj.prettify()
 
 table = bsObj.findAll("table", {"width":"556"})[0]
 rows = table.findAll("tr")
+cells = table.findAll("td")
+
 csvFile = open("test.csv", 'wt')
 writer = csv.writer(csvFile)
+
 try:
-	for row in rows:
-		csvRow = []
-		for cell in row.findAll(['td', 'th']):
-			csvRow.append(cell.get_text(",", strip=True))
-			writer.writerow(csvRow)
+	#for row in rows:
+		for cell in cells:
+			rowArray = []
+			cellContent = (cell.get_text(",", strip=True))
+			cellContent = cellContent.replace("", "")
+			cellContent = cellContent.replace("\t", "").replace("\r", "").replace("\n", "")
+			print(cellContent)
+			rowArray.append(cellContent)
+			writer.writerow(rowArray)
+
 finally:
 	csvFile.close()
